@@ -1,0 +1,10 @@
+__pycache__
+/data/
+refillLastCol.py
+temp.py
+/output/
+/detectors/dire_main
+/detectors/checkpoints/
+venv/
+.venv/
+env/

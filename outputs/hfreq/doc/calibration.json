@@ -1,0 +1,10 @@
+{
+  "thresholds": {
+    "0.01": Infinity,
+    "0.001": Infinity
+  },
+  "logistic": {
+    "coef": 2.5999464769620446,
+    "intercept": -1.508053172216887
+  }
+}

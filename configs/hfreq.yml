@@ -1,0 +1,4 @@
+img_size: 256
+lr: 1e-4
+epochs: 20
+early_stop_patience: 3

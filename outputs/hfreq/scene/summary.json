@@ -1,0 +1,26 @@
+{
+  "scenario": "scene",
+  "seen_png": {
+    "auroc": 1.0,
+    "TPR@FPR=0.01": 0.0,
+    "FPR@thr=0.01": 0.0,
+    "TPR@FPR=0.001": 0.0,
+    "FPR@thr=0.001": 0.0
+  },
+  "unseen_png": {
+    "nano25": {
+      "auroc": 1.0,
+      "TPR@FPR=0.01": 0.0,
+      "FPR@thr=0.01": 0.0,
+      "TPR@FPR=0.001": 0.0,
+      "FPR@thr=0.001": 0.0
+    },
+    "nanopro": {
+      "auroc": 1.0,
+      "TPR@FPR=0.01": 0.0,
+      "FPR@thr=0.01": 0.0,
+      "TPR@FPR=0.001": 0.0,
+      "FPR@thr=0.001": 0.0
+    }
+  }
+}
