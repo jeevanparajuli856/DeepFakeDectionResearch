@@ -32,6 +32,9 @@ def main():
     )
     parser.add_argument("--dire_arch", default="resnet50")
     parser.add_argument("--dire_cpu", action="store_true")
+    parser.add_argument("--plot", action="store_true", help="Generate plots after runs")
+    parser.add_argument("--plot_variant", choices=["png", "jpeg"], default="png")
+    parser.add_argument("--plot_save_dir", default="outputs/figures")
 
     args = parser.parse_args()
 
@@ -71,6 +74,21 @@ def main():
         dire_cmd.append("--jpeg")
 
     run(dire_cmd, project_root, os_env)
+
+    # ------------------------------------------------------------
+    # Plotting
+    # ------------------------------------------------------------
+    if args.plot:
+        plot_cmd = [
+            sys.executable,
+            "-m",
+            "evaluation.plot_results",
+            "--variant",
+            args.plot_variant,
+            "--save_dir",
+            args.plot_save_dir,
+        ]
+        run(plot_cmd, project_root, os_env)
 
     print("\n FULL PIPELINE COMPLETE")
 
