@@ -11,9 +11,13 @@ import argparse
 # 1. LOAD SUMMARY FILES
 # ============================================================
 
-def load_summaries(out_root="outputs"):
+def load_summaries(out_root="outputs", variant="png"):
     rows = []
     out_root = Path(out_root)
+
+    summary_name = "summary.json" if variant == "png" else "summary_jpeg.json"
+    seen_key = "seen_png" if variant == "png" else "seen_jpeg"
+    unseen_key = "unseen_png" if variant == "png" else "unseen_jpeg"
 
     for detector in ["hfreq", "dire"]:
         det_root = out_root / detector
@@ -24,7 +28,7 @@ def load_summaries(out_root="outputs"):
             if not scen_dir.is_dir():
                 continue
 
-            summary_path = scen_dir / "summary.json"
+            summary_path = scen_dir / summary_name
             if not summary_path.exists():
                 continue
 
@@ -38,11 +42,11 @@ def load_summaries(out_root="outputs"):
                 "detector": detector,
                 "scenario": scenario,
                 "generator": "sd",
-                **s["seen_png"],
+                **s[seen_key],
             })
 
             # Unseen (Nano)
-            for gen, m in s["unseen_png"].items():
+            for gen, m in s[unseen_key].items():
                 rows.append({
                     "detector": detector,
                     "scenario": scenario,
@@ -58,7 +62,7 @@ def load_summaries(out_root="outputs"):
 # 2. PLOTTING HELPERS
 # ============================================================
 
-def plot_tpr(df, fpr):
+def plot_tpr(df, fpr, save_dir=None, tag="png"):
     key = f"TPR@FPR={fpr}"
 
     for scenario in sorted(df["scenario"].unique()):
@@ -82,10 +86,14 @@ def plot_tpr(df, fpr):
         plt.grid(alpha=0.3)
         plt.legend()
         plt.tight_layout()
-        plt.show()
+        if save_dir:
+            out_path = Path(save_dir) / f"{scenario}_tpr_fpr{str(fpr).replace('.', '')}_{tag}.png"
+            plt.savefig(out_path, dpi=300)
+        else:
+            plt.show()
 
 
-def plot_auroc(df):
+def plot_auroc(df, save_dir=None, tag="png"):
     for scenario in sorted(df["scenario"].unique()):
         sub = df[df["scenario"] == scenario]
 
@@ -107,7 +115,11 @@ def plot_auroc(df):
         plt.grid(alpha=0.3)
         plt.legend()
         plt.tight_layout()
-        plt.show()
+        if save_dir:
+            out_path = Path(save_dir) / f"{scenario}_auroc_{tag}.png"
+            plt.savefig(out_path, dpi=300)
+        else:
+            plt.show()
 
 
 # ============================================================
@@ -117,20 +129,24 @@ def plot_auroc(df):
 def main():
     parser = argparse.ArgumentParser(description="Plot Deepfake Benchmark Results")
     parser.add_argument("--out_root", default="outputs")
+    parser.add_argument("--variant", choices=["png", "jpeg"], default="png")
+    parser.add_argument("--save_dir", default=None)
     args = parser.parse_args()
 
-    df = load_summaries(args.out_root)
+    if args.save_dir:
+        Path(args.save_dir).mkdir(parents=True, exist_ok=True)
+
+    df = load_summaries(args.out_root, args.variant)
 
     print("Loaded rows:", len(df))
     print(df.head())
 
     # Main SOC/KYC plots
-    plot_tpr(df, fpr=0.01)
-    plot_tpr(df, fpr=0.001)
+    plot_tpr(df, fpr=0.01, save_dir=args.save_dir, tag=args.variant)
+    plot_tpr(df, fpr=0.001, save_dir=args.save_dir, tag=args.variant)
 
     # Ranking plot
-    plot_auroc(df)
-    # plt.savefig("outputs/figures/scene_tpr_fpr1.png", dpi=300)
+    plot_auroc(df, save_dir=args.save_dir, tag=args.variant)
 
 
 if __name__ == "__main__":

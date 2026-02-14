@@ -24,9 +24,10 @@ SD_COUNTS = {
     "test_seen": 100,
 }
 
-NANO_COUNTS = {
-    "nano25": 333,   # test_unseen
-    "nanopro": 166,   # test_unseen
+NANO_COUNTS_BY_SCENARIO = {
+    "doc": {"nano25": 334, "nanopro": 167},
+    "headshot": {"nano25": 333, "nanopro": 166},
+    "scene": {"nano25": 333, "nanopro": 167},
 }
 # ---------------------------------------
 
@@ -80,7 +81,7 @@ def main():
             used_idx.update(chosen.index)
 
         # ---------------- NANO (UNSEEN ONLY) ----------------
-        for gen, n in NANO_COUNTS.items():
+        for gen, n in NANO_COUNTS_BY_SCENARIO[scenario].items():
             nano_df = df[
                 (df.scenario == scenario) &
                 (df.generator_family == gen)
@@ -98,6 +99,11 @@ def main():
         "SD leaked into unseen!"
 
     assert (df.split != "UNASSIGNED").all(), "Some samples were not assigned a split!"
+
+    nano25_total = (df.generator_family == "nano25").sum()
+    nanopro_total = (df.generator_family == "nanopro").sum()
+    assert nano25_total == 1000, f"Expected 1000 nano25 samples, got {nano25_total}"
+    assert nanopro_total == 500, f"Expected 500 nanopro samples, got {nanopro_total}"
 
     # ---------------- WRITE OUTPUTS ----------------
     for split in ["train", "val", "test_seen", "test_unseen"]:
