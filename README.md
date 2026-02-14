@@ -5,6 +5,18 @@ This repo runs a SOC/KYC-oriented deepfake benchmark for two detectors:
 - DIRE (pretrained, inference-only)
 - hfreq (frequency CNN, trained per scenario)
 
+## Paper and citation
+
+An EPUB version of the paper is included in this repository for citation.
+
+If you use this benchmark or the accompanying paper, please cite or contact:
+
+Jeevan Parajuli
+Department of Computer Science
+University of Louisiana Monroe
+Monroe, LA, USA
+parajulij@warhawks.ulm.edu
+
 ## Dataset expectations
 
 Manifests are CSVs with the schema below:

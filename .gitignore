@@ -3,8 +3,14 @@ __pycache__
 refillLastCol.py
 temp.py
 /output/
+/outputs/
 /detectors/dire_main
 /detectors/checkpoints/
 venv/
 .venv/
 env/
+*.md
+!README.md
+!Readme.md
+/scripts/
+*.docx
