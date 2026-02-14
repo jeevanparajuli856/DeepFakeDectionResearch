@@ -6,7 +6,7 @@ import logging
 SEED = 825
 
 # ---------------- CONFIG ----------------
-INPUT_MANIFEST = "data/manifests/master_manifest.csv"
+INPUT_MANIFEST = "data/manifests/master_manifest_new.csv"
 OUT_DIR = Path("data/manifests")
 
 SCENARIOS = ["doc", "headshot", "scene"]

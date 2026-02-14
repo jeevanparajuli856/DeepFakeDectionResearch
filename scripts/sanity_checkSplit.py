@@ -1,7 +1,7 @@
 import pandas as pd
 from pathlib import Path
 
-MANIFEST = "data/manifests/master_manifest.csv"
+MANIFEST = "data/manifests/master_manifest_new.csv"
 
 PNG_ROOT = Path("data/images")
 JPEG_ROOT = Path("data/images_jpeg")
