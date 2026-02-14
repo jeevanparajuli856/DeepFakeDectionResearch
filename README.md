@@ -1,72 +1,99 @@
-# SOC/KYC Deepfake Benchmark
+# Security Under Diffusion Benchmark
 
-This repo runs a SOC/KYC-oriented deepfake benchmark for two detectors:
+Security-focused diffusion deepfake benchmark for document, headshot, and scene verification. The repo evaluates two detectors under seen and unseen generator shifts, with both PNG and JPEG-90 variants.
 
-- DIRE (pretrained, inference-only)
-- hfreq (frequency CNN, trained per scenario)
+## Detectors
 
-## Paper and citation
+- **DIRE**: pretrained diffusion reconstruction error, inference-only
+- **HFreq**: frequency-domain CNN trained per scenario
 
-An EPUB version of the paper is included in this repository for citation.
+## Quick start
 
-If you use this benchmark or the accompanying paper, please cite or contact:
+1) Install dependencies from [requirements.txt](requirements.txt).
 
-Jeevan Parajuli
-Department of Computer Science
-University of Louisiana Monroe
-Monroe, LA, USA
-parajulij@warhawks.ulm.edu
+```
+python -m venv venv
+venv/Scripts/python.exe -m pip install -r requirements.txt
+```
 
-## Dataset expectations
+2) Prepare data and manifests.
 
-Manifests are CSVs with the schema below:
+- PNG masters: [data/images/](data/images/)
+- JPEG-90 mirrors: [data/images_jpeg/](data/images_jpeg/)
+- Master manifest: [data/manifests/master_manifest.csv](data/manifests/master_manifest.csv)
+
+3) Run the full benchmark.
+
+```
+python -m runners.run_all --dire_ckpt detectors/checkpoints/imagenet_adm.pth --plot
+```
+
+4) Run JPEG-only evaluation (uses existing models and calibration).
+
+```
+python -m runners.run_all --jpeg --dire_ckpt detectors/checkpoints/imagenet_adm.pth --plot --plot_variant jpeg
+```
+
+Outputs are written under [outputs/](outputs/) by default.
+
+## Data layout
+
+Expected structure (relative paths are stored in manifests):
+
+```
+data/
+	images/
+		doc/
+		headshot/
+		scene/
+	images_jpeg/
+		doc/
+		headshot/
+		scene/
+```
+
+## Manifest schema
+
+Manifests are CSVs with this header:
 
 ```
 image_id,path,label,scenario,source,generator_family,split
 ```
 
-Key fields:
+Field meanings:
 
 - `label`: 0 = bona fide, 1 = AI-generated
 - `scenario`: `doc`, `headshot`, `scene`
 - `generator_family`: `real`, `sd`, `nano25`, `nanopro`
 - `split`: `train`, `val`, `test_seen`, `test_unseen`
 
-PNG masters should live under `data/images/...` and JPEG-90 mirrors under
-`data/images_jpeg/...` with identical relative structure.
+## Dataset splits
 
-## Prepare manifests
+- Seen: `real` and `sd`
+- Unseen: `nano25` and `nanopro`
+- Train and validation use only seen generators
 
-1) Update `data/manifests/master_manifest.csv` to match your sources.
-2) Split using:
+## Checkpoints
 
-```
-python scripts/split_dataset.py
-```
+Available checkpoints live under [detectors/checkpoints/](detectors/checkpoints/).
+Use the one that matches your experiment goal.
 
-## JPEG-90 mirror
+## Helper scripts (optional)
 
-```
-python scripts/make_jpeg90.py
-```
+Local helper scripts may exist under [scripts/](scripts/) for manifest building, sanity checks, and JPEG conversion. These are optional utilities and may not be tracked in the repo.
 
-## Run full benchmark
+## Paper and citation
 
-```
-python -m runners.run_all --dire_ckpt detectors/checkpoints/lsun_stylegan.pth
-```
+An EPUB version of the paper is included in this repository for citation. Add the EPUB file to the repo root or a dedicated paper folder and keep the filename stable for citation.
 
-JPEG-only evaluation (uses existing models + calibration):
+If you use this benchmark or the accompanying paper, please cite or contact:
 
-```
-python -m runners.run_all --jpeg --dire_ckpt detectors/checkpoints/lsun_stylegan.pth
-```
+Jeevan Parajuli  
+Department of Computer Science  
+University of Louisiana Monroe  
+Monroe, LA, USA  
+parajulij@warhawks.ulm.edu
 
-Generate plots (PNG or JPEG summaries):
+## Recommended citation text
 
-```
-python -m runners.run_all --dire_ckpt detectors/checkpoints/lsun_stylegan.pth --plot
-python -m runners.run_all --jpeg --dire_ckpt detectors/checkpoints/lsun_stylegan.pth --plot --plot_variant jpeg
-```
-
-Outputs are written under `outputs/hfreq/<scenario>/` and `outputs/dire/<scenario>/`.
+Jeevan Parajuli. Security Under Diffusion Benchmark. 2026. EPUB available in the project repository.
