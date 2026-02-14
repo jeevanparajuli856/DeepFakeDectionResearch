@@ -97,20 +97,19 @@ def main():
                 logger,
             )
 
-                        # ---- Metrics (UNSEEN per generator)
-            df_seen = pd.read_csv(scores_seen)
-            df_unseen = pd.read_csv(scores_unseen)
+            # ---- Metrics (UNSEEN per generator)
+            df_seen = pd.read_csv(scores_seen_j)
+            df_unseen = pd.read_csv(scores_unseen_j)
 
             unseen_summary = {}
 
-
-            for gen in ["nano25", "nanopro"]:
+            for gen in UNSEEN_GENERATORS:
                 sub_df = build_unseen_eval_df(df_seen, df_unseen, gen)
                 if sub_df is None:
                     logger.warning(f"Skip unseen {gen}: missing data")
                     continue
 
-                sub_csv = scen_dir / f"scores_test_unseen_{gen}.csv"
+                sub_csv = scen_dir / f"scores_test_unseen_{gen}_jpeg.csv"
                 sub_df.to_csv(sub_csv, index=False)
 
                 out_json = scen_dir / f"metrics_test_unseen_{gen}_jpeg.json"

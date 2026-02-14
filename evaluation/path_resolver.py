@@ -11,6 +11,7 @@ def resolve_image_path(path: str, use_jpeg: bool) -> str:
         return path
 
     p = path.replace("data/images/", "data/images_jpeg/")
+    p = p.replace("data\\images\\", "data\\images_jpeg\\")
     p = re.sub(r"\.(png|jpg|jpeg)$", ".jpg", p, flags=re.IGNORECASE)
     return p
 

@@ -4,11 +4,11 @@ import sys
 from pathlib import Path
 
 
-def run(cmd):
+def run(cmd, cwd, env):
     print("=" * 80)
     print("Running:", " ".join(cmd))
     print("=" * 80)
-    ret = subprocess.call(cmd)
+    ret = subprocess.call(cmd, cwd=str(cwd), env=env)
     if ret != 0:
         print("Command failed:", " ".join(cmd))
         sys.exit(ret)
@@ -51,7 +51,7 @@ def main():
     if args.jpeg:
         hfreq_cmd.append("--jpeg")
 
-    run(hfreq_cmd)
+    run(hfreq_cmd, project_root, os_env)
 
     # ------------------------------------------------------------
     # DIRE
@@ -70,7 +70,7 @@ def main():
     if args.jpeg:
         dire_cmd.append("--jpeg")
 
-    run(dire_cmd)
+    run(dire_cmd, project_root, os_env)
 
     print("\n FULL PIPELINE COMPLETE")
 
